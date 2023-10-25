@@ -1,7 +1,6 @@
 import { galleryItems } from './gallery-items.js';
 
 const galleryList = document.querySelector('.gallery');
-let instance = null;
 
 galleryItems.forEach(item => {
   const listItem = document.createElement('li');
@@ -15,7 +14,7 @@ galleryItems.forEach(item => {
   image.classList.add('gallery__image');
   image.src = item.preview;
   image.alt = item.description;
-  image.dataset.source = item.original; // Añade el atributo data-source
+  image.dataset.source = item.original;
 
   link.appendChild(image);
   listItem.appendChild(link);
@@ -27,22 +26,20 @@ galleryList.addEventListener('click', e => {
   e.preventDefault();
 
   if (e.target.classList.contains('gallery__image')) {
-    const largeImageUrl = e.target.dataset.source; // Obtiene la URL desde el atributo data-source
+    const largeImageUrl = e.target.dataset.source;
 
-    instance = basicLightbox.create(`
+    const instance = new SimpleLightbox(`
       <img src="${largeImageUrl}" width="800" height="600">
-    `);
+    `, {
+      captionDelay: 250,
+    });
 
     instance.show();
 
-    document.addEventListener('keydown', handleKeyDown);
+    const subtitle = document.createElement('div');
+    subtitle.classList.add('sl-caption');
+    subtitle.innerText = 'title image';
+
+    instance.element().appendChild(subtitle);
   }
 });
-
-function handleKeyDown(event) {
-  if (event.code === 'Escape') {
-    instance.close();
-    document.removeEventListener('keydown', handleKeyDown);
-  }
-}
-
